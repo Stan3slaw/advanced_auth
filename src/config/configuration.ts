@@ -1,13 +1,21 @@
 interface Config {
-  jwt: {
+  accessToken: {
+    secret: string;
+    expiresIn: string;
+  };
+  refreshToken: {
     secret: string;
     expiresIn: string;
   };
 }
 
 export default (): Config => ({
-  jwt: {
-    secret: process.env.JWT_SECRET || 'secret',
-    expiresIn: process.env.EXPIREIN || '120s',
+  accessToken: {
+    secret: process.env.JWT_ACCESS_SECRET || 'secret',
+    expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIREIN || '120s',
+  },
+  refreshToken: {
+    secret: process.env.JWT_REFRESH_SECRET || 'secret',
+    expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIREIN || '7d',
   },
 });
