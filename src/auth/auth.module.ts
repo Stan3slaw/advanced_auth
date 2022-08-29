@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { EmailConfirmationTokenModule } from '../email-confirmation-token/email-confirmation-token.module';
+import { EmailModule } from '../email/email.module';
 import { UsersModule } from '../users';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -22,6 +24,8 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
     }),
     UsersModule,
     PassportModule,
+    EmailModule,
+    EmailConfirmationTokenModule,
   ],
   controllers: [AuthController],
   providers: [ConfigService, AuthService, LoginStrategy, AccessTokenStrategy, RefreshTokenStrategy],

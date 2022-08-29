@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { User } from '../users/decorators/user.decorator';
 import { CreateUserDto, LoginUserDto } from '../users';
@@ -7,6 +7,7 @@ import type { AuthResponseDto } from './dto/auth-response.dto';
 import { AccessTokenGuard } from './guards/access-token.guard';
 import { LoginGuard } from './guards/login.guard';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
+import { ConfirmEmailDto } from './dto/confirm-email.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +15,7 @@ export class AuthController {
 
   @Post('signup')
   @UsePipes(new ValidationPipe())
-  async create(@Body() createUserDto: CreateUserDto): Promise<AuthResponseDto> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<void> {
     return this.authService.create(createUserDto);
   }
 
@@ -37,5 +38,10 @@ export class AuthController {
     @User('refreshToken') refreshToken: string,
   ): Promise<AuthResponseDto> {
     return this.authService.refreshTokens(currentUserEmail, refreshToken);
+  }
+
+  @Get('confirm')
+  async confirmEmail(@Query(ValidationPipe) query: ConfirmEmailDto): Promise<AuthResponseDto> {
+    return this.authService.confirmEmail(query.token);
   }
 }

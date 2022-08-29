@@ -29,9 +29,7 @@ export class UsersService {
   };
 
   findOneWithPassword = async (email: string): Promise<UserDocument | null> => {
-    const user = await this.userModel.findOne({ email });
-
-    return user;
+    return this.userModel.findOne({ email });
   };
 
   update = async (userId: number, updateUserDto: UpdateUserDto): Promise<UserDocument> => {
