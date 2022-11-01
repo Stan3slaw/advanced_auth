@@ -8,15 +8,17 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { userStatusEnum } from '../users/enums/user-status.enum';
+import { UserStatusEnum } from '../users/enums/user-status.enum';
 import { EmailService } from '../email/email.service';
-import { EmailConfirmationTokenService } from '../email-confirmation-token/email-confirmation-token.service';
 import type { UserDocument } from '../users/schemas/users.schema';
-import type { UserDto, LoginUserDto, CreateUserDto } from '../users';
+import type { UserDto } from '../users';
 import { UsersService } from '../users';
 import type { AuthResponseDto } from './dto/auth-response.dto';
 import type { AuthPayload, EmailConfirmationPayload, VerifiedEmailConfirmationTokenInfo } from './types/auth.types';
 import { EMAIL_CONFIRMATION_ROUTE } from './constants/constants';
+import { EmailConfirmationTokenService } from '../email-confirmation-token/email-confirmation-token.service';
+import type { SignupUserDto } from './dto/signup-user.dto';
+import type { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +29,7 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  create = async (user: CreateUserDto): Promise<void> => {
+  signup = async (user: SignupUserDto): Promise<void> => {
     const existingUser = await this.usersService.findOneWithPassword(user.email);
 
     if (existingUser) {
@@ -42,7 +44,7 @@ export class AuthService {
   login = async (user: LoginUserDto): Promise<AuthResponseDto> => {
     const { id, email, status } = await this.usersService.findOneWithPassword(user.email);
 
-    if (status !== userStatusEnum.active) {
+    if (status !== UserStatusEnum.active) {
       throw new ForbiddenException('Please confirm your email');
     }
 
@@ -127,8 +129,8 @@ export class AuthService {
 
     await this.emailConfirmationTokenService.delete(data.id, token);
 
-    if (user && user.status === userStatusEnum.pending) {
-      user.status = userStatusEnum.active;
+    if (user && user.status === UserStatusEnum.pending) {
+      user.status = UserStatusEnum.active;
 
       await user.save();
       const payload = { id: user.id, email: user.email };
