@@ -161,10 +161,11 @@ export class AuthService {
 
       const tokenExists = await this.emailConfirmationTokenService.exists(data.id, token);
 
-      if (tokenExists) {
-        return data;
+      if (!tokenExists) {
+        throw new UnauthorizedException();
       }
-      throw new UnauthorizedException();
+
+      return data;
     } catch (error) {
       throw new UnauthorizedException();
     }
