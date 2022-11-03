@@ -1,13 +1,14 @@
 import { Body, Controller, Get, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { User } from '../users/decorators/user.decorator';
-import { CreateUserDto, LoginUserDto } from '../users';
 import { AuthService } from './auth.service';
 import type { AuthResponseDto } from './dto/auth-response.dto';
 import { AccessTokenGuard } from './guards/access-token.guard';
 import { LoginGuard } from './guards/login.guard';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
+import { SignupUserDto } from './dto/signup-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,8 +16,8 @@ export class AuthController {
 
   @Post('signup')
   @UsePipes(new ValidationPipe())
-  async create(@Body() createUserDto: CreateUserDto): Promise<void> {
-    return this.authService.create(createUserDto);
+  async signup(@Body() createUserDto: SignupUserDto): Promise<void> {
+    return this.authService.signup(createUserDto);
   }
 
   @UseGuards(LoginGuard)

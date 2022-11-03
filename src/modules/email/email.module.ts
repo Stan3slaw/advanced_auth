@@ -19,7 +19,7 @@ ConfigModule.forRoot();
         },
       },
       template: {
-        dir: process.cwd() + '/src/email/templates/',
+        dir: process.cwd() + '/src/modules/email/templates/',
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true,
